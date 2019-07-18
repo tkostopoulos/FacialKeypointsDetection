@@ -47,7 +47,7 @@ class VGG16_Obj:
         # Block 1     
         b1_1 = K.layers.Conv2D(64, (3, 3), 
                       activation='relu', 
-                      border_mode='same', 
+                      padding='same', 
                       name='block1_conv1')
         b1_1.trainable = FeatureExtractorTraining
         x = b1_1(img_input)
@@ -140,7 +140,7 @@ class VGG16_Obj:
         
         b5_2 = K.layers.Conv2D(512, (3, 3), 
                       activation='relu', 
-                      border_mode='same', 
+                      padding='same', 
                       name='block5_conv2')
         b5_2.trainable = FeatureExtractorTraining
         x = b5_2(x)
@@ -201,7 +201,9 @@ class VGG16_Obj:
         return model
 
 
-    def AddFCtoVGG16FeatureExtractor(self, fc1Variable = 100, fc2Variable = 30, predVariable = 10, l2_weight = 5e-04, like_its_hot = 0.2):
+    def AddFCtoVGG16FeatureExtractor(self, fc1Variable = 200, 
+    	                            fc2Variable = 80, predVariable = 30, 
+    	                            l2_weight = 5e-04, like_its_hot = 0.1):
         '''
         Purpose: utalize Transfer Learning and slam a vgg16 network together with different FC layers
         Output: model with just that (if you do a model.summary it misses the new model but data is there)
@@ -222,7 +224,7 @@ class VGG16_Obj:
                      name ="fc2"))
         model2.add(K.layers.Dropout(like_its_hot, name = 'regulator_2')) #add a little more regulation
         model2.add(K.layers.Dense(predVariable, #define amount of variables in function header
-                      activation='relu',
+                      #activation='softmax', # don't want an activator function here
                       kernel_regularizer=K.regularizers.l2(l2_weight),
                       name  ="pred"))
 

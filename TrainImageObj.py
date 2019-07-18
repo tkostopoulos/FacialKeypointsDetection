@@ -7,6 +7,8 @@ class TrainImage:
         #################################################################################
         ############################### Defining Features ###############################
         #################################################################################
+        self.generalData = trainData
+
         self.leftEyeCenterFloat = (trainData["left_eye_center_y"][index],
                                    trainData["left_eye_center_x"][index])
         self.leftEyeCenterInt = (int(trainData["left_eye_center_y"][index]), 
@@ -83,6 +85,9 @@ class TrainImage:
         
         self.image = self.formatImage(trainData["Image"][index])
         self.labeledImage = self.LabeledImage()
+
+        self.trainingImageMatrix = self.createImagesMatrix()
+        self.validationData = np.array(trainData)[:,:-1] # in one line, grab everything but the images
         
     def formatImage(self, ImageStrArray, imageSize = (96,96)):
         '''
@@ -93,6 +98,17 @@ class TrainImage:
         image = np.reshape(imageInt, imageSize) # defined in the database
         return image
     
+    def createImagesMatrix(self): 
+      '''
+      Loop through all the data and create an array of the Images for V&V
+      '''
+          allImages = []
+          for i in range(len(self.generalData)):
+            currentImage = self.formatImage(generalData["Image"][i])
+            allImages.append(currentImage)
+          allImages = np.array(allImages)
+      return allImages
+
     def ShowImage(self, cmap = 'Spectral'):
         '''
 	    Purpose: show the image
