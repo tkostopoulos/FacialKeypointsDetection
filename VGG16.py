@@ -47,7 +47,7 @@ class VGG16_Obj:
         # Block 1     
         b1_1 = K.layers.Conv2D(64, (3, 3), 
                       activation='relu', 
-                      padding='same', 
+                      padding='same', # border_mode is now padding
                       name='block1_conv1')
         b1_1.trainable = FeatureExtractorTraining
         x = b1_1(img_input)

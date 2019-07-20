@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-
+from PIL import Image
 
 class TrainImage:
     def __init__(self, trainData, index):
@@ -101,12 +101,32 @@ class TrainImage:
     def createImagesMatrix(self): 
       '''
       Loop through all the data and create an array of the Images for V&V
+      Process:
+          1. Import image from strings
+          2. extrapolate the image to make it 224x224
+          3. add 2 more layer simulating RGB (previously found to be the fastest means of doing this)
       '''
-          allImages = []
-          for i in range(len(self.generalData)):
-            currentImage = self.formatImage(generalData["Image"][i])
-            allImages.append(currentImage)
-          allImages = np.array(allImages)
+      allImages = []
+      for i in range(len(self.generalData)):
+        # import image with method above
+        
+        currentImage = self.formatImage(self.generalData["Image"][i])
+        
+        # extrapolate the images to meet model requirements
+        imagePIL = Image.fromarray(currentImage)
+        imageResized = imagePIL.resize((224,224), Image.NEAREST) # nearest neighbor resolution increase
+        imageResized = np.array(imageResized)
+
+        # copy the same image for 3 layers (mimicing RGB)
+        imageResized3D = []
+        imageResized3D.append(imageResized)
+        imageResized3D.append(imageResized)
+        imageResized3D.append(imageResized) 
+
+        allImages.append(imageResized3D)
+      allImages = np.array(allImages)
+      allImages = np.swapaxes(allImages, 1, 2) # make shape (#Images, 224, 3, 224)
+      allImages = np.swapaxes(allImages, 2, 3) # make shape (#Images, 224, 224, 3)
       return allImages
 
     def ShowImage(self, cmap = 'Spectral'):
