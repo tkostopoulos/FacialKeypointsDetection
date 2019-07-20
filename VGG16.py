@@ -201,9 +201,9 @@ class VGG16_Obj:
         return model
 
 
-    def AddFCtoVGG16FeatureExtractor(self, fc1Variable = 200, 
-    	                            fc2Variable = 80, predVariable = 30, 
-    	                            l2_weight = 5e-04, like_its_hot = 0.1):
+    def AddFCtoVGG16FeatureExtractor(self, fc1Variable = 500, 
+    	                            fc2Variable = 200, predVariable = 30, 
+    	                            l2_weight = 1e-03, like_its_hot = 0.25):
         '''
         Purpose: utalize Transfer Learning and slam a vgg16 network together with different FC layers
         Output: model with just that (if you do a model.summary it misses the new model but data is there)
@@ -212,11 +212,12 @@ class VGG16_Obj:
         # the majic of transfer learning
         
         #make the second model we slam together
-        model2 = K.models.Sequential() # MUST use Keras API to add layers together
+        model2 = K.models.Sequential(name="FC_Layers_Model") # MUST use Keras API to add layers together
         model2.add(K.layers.Dense(fc1Variable, #define amount of variables in function header
                       activation='relu',
                       kernel_regularizer=K.regularizers.l2(l2_weight),
                       name  ="fc1"))
+        
         model2.add(K.layers.Dropout(like_its_hot, name = 'regulator_1')) # add regulation
         model2.add(K.layers.Dense(fc2Variable, #define amount of variables in function header
                      activation='relu',

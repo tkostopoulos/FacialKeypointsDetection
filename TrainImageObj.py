@@ -114,7 +114,7 @@ class TrainImage:
         
         # extrapolate the images to meet model requirements
         imagePIL = Image.fromarray(currentImage)
-        imageResized = imagePIL.resize((224,224), Image.NEAREST) # nearest neighbor resolution increase
+        imageResized = imagePIL.resize((224,224), Image.BILINEAR) # nearest neighbor resolution increase
         imageResized = np.array(imageResized)
 
         # copy the same image for 3 layers (mimicing RGB)
